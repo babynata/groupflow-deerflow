@@ -1,0 +1,12 @@
+{
+  "name": "groupflow-deerflow",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "node scripts/serve.js",
+    "validate": "node scripts/validate-workspace.js && node scripts/validate-lifecycle.js",
+    "validate:lifecycle": "node scripts/validate-lifecycle.js",
+    "validate:workspace": "node scripts/validate-workspace.js"
+  }
+}

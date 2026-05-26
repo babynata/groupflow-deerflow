@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GroupFlow for DeerFlow 2.0</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">GroupFlow for DeerFlow 2.0</p>
+          <h1 id="projectName">Project Workspace</h1>
+          <p id="projectSummary" class="summary"></p>
+        </div>
+        <section class="run-strip" aria-label="Run state">
+          <div>
+            <span>Status</span>
+            <strong id="groupStatus">-</strong>
+          </div>
+          <div>
+            <span>Resume</span>
+            <strong id="resumeState">-</strong>
+          </div>
+          <div>
+            <span>Memory</span>
+            <strong id="memoryHealth">-</strong>
+          </div>
+        </section>
+      </header>
+
+      <section class="actions" aria-label="Workspace actions">
+        <button id="runStepButton" type="button">Run next step</button>
+        <button id="resumeButton" type="button">Resume group</button>
+        <button id="compactButton" type="button">Compact memory</button>
+        <button id="refreshFilesButton" type="button">Refresh files</button>
+      </section>
+
+      <div class="layout">
+        <aside class="sidebar" aria-label="Groups">
+          <div class="panel-heading">
+            <span>DeerFlow Groups</span>
+            <strong id="groupCount">3</strong>
+          </div>
+          <nav id="groupTabs" class="group-tabs"></nav>
+        </aside>
+
+        <section class="main-grid">
+          <article class="panel group-brief">
+            <div class="panel-heading">
+              <span>Active Group</span>
+              <strong id="activeGroupTitle">-</strong>
+            </div>
+            <p id="activeObjective"></p>
+          </article>
+
+          <article class="panel memory-panel">
+            <div class="panel-heading">
+              <span>Group Memory</span>
+              <strong id="memoryCount">0 entries</strong>
+            </div>
+            <div id="memorySections" class="memory-sections"></div>
+          </article>
+
+          <article class="panel agent-panel">
+            <div class="panel-heading">
+              <span>Agent Board</span>
+              <strong id="agentCount">0 agents</strong>
+            </div>
+            <div id="agentBoard" class="agent-board"></div>
+          </article>
+
+          <article class="panel timeline-panel">
+            <div class="panel-heading">
+              <span>Timeline</span>
+              <strong id="timelineCount">0 events</strong>
+            </div>
+            <ol id="timeline" class="timeline"></ol>
+          </article>
+        </section>
+
+        <aside class="file-ledger" aria-label="File State Ledger">
+          <div class="panel-heading">
+            <span>File State Ledger</span>
+            <strong id="fileCount">0 files</strong>
+          </div>
+          <div id="fileList" class="file-list"></div>
+        </aside>
+      </div>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
