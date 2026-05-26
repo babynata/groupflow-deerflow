@@ -134,9 +134,9 @@ Acceptance:
 - A paused or failed group can be reconstructed from persisted memory and file state.
 - Replay shows why a group reached its current state.
 
-## V1.0: DeerFlow Community Proposal
+## V1.0: Production Readiness
 
-Goal: package GroupFlow as a credible DeerFlow extension and community proposal.
+Goal: make GroupFlow technically credible before any community-facing push.
 
 Scope:
 
@@ -147,9 +147,29 @@ Scope:
 - examples
 - tests
 - security boundary notes
-- RFC-style proposal
+- real DeerFlow run validation notes
+- clear compatibility boundaries
 
 Acceptance:
 
-- The repository is clear enough for DeerFlow users to try, critique, and contribute.
-- The project can support a GitHub discussion or RFC around group-level memory for DeerFlow 2.0.
+- GroupFlow can run locally, validate reliably, and explain its DeerFlow integration path without relying on external promotion.
+- Runtime, MCP, adapter, persistence, replay, and workspace behavior are documented enough for an engineer to evaluate.
+
+## V1.1: Public Expression and Community Discussion
+
+Goal: package the completed technical work for public attention and DeerFlow community discussion.
+
+Scope:
+
+- workspace screenshot or short GIF
+- concise announcement article
+- GitHub issue set for MCP, DeerFlow adapter, and memory policy discussion
+- refined repository description and topics
+- community-facing RFC summary
+- feedback template for DeerFlow users
+
+Acceptance:
+
+- A new visitor can understand the project from the GitHub first screen.
+- The repository has clear discussion entry points for maintainers and early users.
+- Public messaging is backed by working runtime, integration examples, validation, and documented design.

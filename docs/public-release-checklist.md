@@ -13,12 +13,16 @@ Use this checklist before making the repository public.
 - License file exists.
 - No temporary project wording appears in source or docs.
 
-## Recommended
+## Final Iteration Only
+
+These items should happen after runtime, MCP, DeerFlow adapter, workspace, persistence, replay, and validation work are technically credible.
 
 - Add a workspace screenshot or short GIF to the repository.
-- Add a short issue template for DeerFlow integration feedback.
 - Open the first GitHub issue for MCP server implementation.
 - Open the second GitHub issue for real DeerFlow adapter validation.
+- Open a third GitHub issue for Project Memory and Group Memory sync policy.
+- Publish a concise announcement article.
+- Refine repository topics and description for public discovery.
 
 ## Release Positioning
 
@@ -33,4 +37,3 @@ Suggested first announcement angle:
 ```text
 DeerFlow has sub-agents. GroupFlow adds the missing shared state layer: group memory, file ledger, decisions, timeline, and resume context.
 ```
-
