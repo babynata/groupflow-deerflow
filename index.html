@@ -40,6 +40,12 @@
       <div class="layout">
         <aside class="sidebar" aria-label="Groups">
           <div class="panel-heading">
+            <span>Projects</span>
+            <strong id="projectCount">1</strong>
+          </div>
+          <div id="projectList" class="project-list"></div>
+
+          <div class="panel-heading">
             <span>DeerFlow Groups</span>
             <strong id="groupCount">3</strong>
           </div>
@@ -60,6 +66,7 @@
               <span>Group Memory</span>
               <strong id="memoryCount">0 entries</strong>
             </div>
+            <p id="memorySummary" class="memory-summary"></p>
             <div id="memorySections" class="memory-sections"></div>
           </article>
 
@@ -76,6 +83,12 @@
               <span>Timeline</span>
               <strong id="timelineCount">0 events</strong>
             </div>
+            <select id="timelineFilter" class="timeline-filter" aria-label="Timeline filter">
+              <option value="all">All events</option>
+              <option value="agent">Agent events</option>
+              <option value="file">File events</option>
+              <option value="group">Group events</option>
+            </select>
             <ol id="timeline" class="timeline"></ol>
           </article>
         </section>
@@ -85,6 +98,13 @@
             <span>File State Ledger</span>
             <strong id="fileCount">0 files</strong>
           </div>
+          <section class="artifact-section">
+            <div class="panel-heading compact">
+              <span>Artifacts</span>
+              <strong id="artifactCount">0</strong>
+            </div>
+            <div id="artifactList" class="artifact-list"></div>
+          </section>
           <div id="fileList" class="file-list"></div>
         </aside>
       </div>

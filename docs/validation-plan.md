@@ -92,6 +92,10 @@ The command checks:
 - runtime smoke path works
 - runtime artifact listing works
 - DeerFlow lifecycle reference runs end to end
+- MCP-style tool lifecycle runs end to end
+- DeerFlow adapter event mapping runs end to end
+- JSON storage save/load works
+- checkpoint and replay inspection work
 - fixture group ids are consistent
 - workspace actions update memory, files, agents, and timeline
 
@@ -112,3 +116,20 @@ The lifecycle reference verifies:
 - pause and resume state
 - artifact listing
 - final JSON summary shape
+
+## Full Validation
+
+Run:
+
+```text
+npm run validate
+```
+
+The full suite includes:
+
+- workspace behavior
+- Core Runtime lifecycle
+- MCP-style tool lifecycle
+- DeerFlow adapter lifecycle
+- JSON storage lifecycle
+- replay lifecycle

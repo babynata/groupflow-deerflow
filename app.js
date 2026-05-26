@@ -54,6 +54,8 @@ const runSteps = [
 ];
 
 const elements = {
+  projectCount: document.querySelector("#projectCount"),
+  projectList: document.querySelector("#projectList"),
   projectName: document.querySelector("#projectName"),
   projectSummary: document.querySelector("#projectSummary"),
   groupStatus: document.querySelector("#groupStatus"),
@@ -64,12 +66,16 @@ const elements = {
   activeGroupTitle: document.querySelector("#activeGroupTitle"),
   activeObjective: document.querySelector("#activeObjective"),
   memoryCount: document.querySelector("#memoryCount"),
+  memorySummary: document.querySelector("#memorySummary"),
   memorySections: document.querySelector("#memorySections"),
   agentCount: document.querySelector("#agentCount"),
   agentBoard: document.querySelector("#agentBoard"),
   timelineCount: document.querySelector("#timelineCount"),
+  timelineFilter: document.querySelector("#timelineFilter"),
   timeline: document.querySelector("#timeline"),
   fileCount: document.querySelector("#fileCount"),
+  artifactCount: document.querySelector("#artifactCount"),
+  artifactList: document.querySelector("#artifactList"),
   fileList: document.querySelector("#fileList"),
   runStepButton: document.querySelector("#runStepButton"),
   resumeButton: document.querySelector("#resumeButton"),
@@ -82,9 +88,11 @@ function render() {
   const project = state.projects.deerflow2;
   const group = state.groups[activeGroupId];
   const groups = project.groupIds.map((id) => state.groups[id]);
+  const projects = Object.values(state.projects);
 
   elements.projectName.textContent = project.name;
   elements.projectSummary.textContent = project.summary;
+  elements.projectCount.textContent = projects.length;
   elements.groupStatus.textContent = group.status;
   elements.resumeState.textContent = group.resumeState;
   elements.memoryHealth.textContent = group.memoryHealth;
@@ -92,11 +100,27 @@ function render() {
   elements.activeGroupTitle.textContent = group.title;
   elements.activeObjective.textContent = group.objective;
 
+  renderProjects(projects);
   renderTabs(groups);
   renderMemory(group);
   renderAgents(group);
   renderTimeline(group);
   renderFiles(group);
+  renderArtifacts(group);
+}
+
+function renderProjects(projects) {
+  elements.projectList.innerHTML = projects
+    .map(
+      (project) => `
+        <article class="project-row">
+          <strong>${escapeHtml(project.name)}</strong>
+          <span>${escapeHtml(project.summary || "")}</span>
+          <small>${project.groupIds.length} groups</small>
+        </article>
+      `
+    )
+    .join("");
 }
 
 function renderTabs(groups) {
@@ -130,6 +154,7 @@ function renderMemory(group) {
   };
   const entries = Object.values(group.memory).reduce((count, items) => count + items.length, 0);
   elements.memoryCount.textContent = `${entries} entries`;
+  elements.memorySummary.textContent = runtime.summarizeGroup(group.id);
   elements.memorySections.innerHTML = Object.entries(group.memory)
     .map(([section, items]) => {
       const list = items.map((item) => `<li>${escapeHtml(readEntry(item))}</li>`).join("");
@@ -165,8 +190,16 @@ function renderAgents(group) {
 }
 
 function renderTimeline(group) {
-  elements.timelineCount.textContent = `${group.timeline.length} events`;
-  elements.timeline.innerHTML = group.timeline
+  const filter = elements.timelineFilter.value;
+  const events = group.timeline.filter((event) => {
+    if (filter === "all") return true;
+    if (filter === "agent") return event.actor && event.actor !== "groupflow";
+    if (filter === "file") return event.title.toLowerCase().includes("file");
+    if (filter === "group") return event.title.toLowerCase().includes("group");
+    return true;
+  });
+  elements.timelineCount.textContent = `${events.length} events`;
+  elements.timeline.innerHTML = events
     .map(
       (event) => `
         <li>
@@ -191,6 +224,21 @@ function renderFiles(group) {
             <small>${escapeHtml(file.role || "tracked")} · ${escapeHtml(file.ownerAgentId || "groupflow")}</small>
           </div>
           <span class="file-status ${file.status}">${escapeHtml(file.status || "tracked")}</span>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function renderArtifacts(group) {
+  const artifacts = runtime.listArtifacts(group.id);
+  elements.artifactCount.textContent = artifacts.length;
+  elements.artifactList.innerHTML = artifacts
+    .map(
+      (file) => `
+        <article class="artifact-row">
+          <strong>${escapeHtml(file.path)}</strong>
+          <small>${escapeHtml(file.status || "tracked")}</small>
         </article>
       `
     )
@@ -288,5 +336,6 @@ elements.runStepButton.addEventListener("click", runNextStep);
 elements.resumeButton.addEventListener("click", resumeGroup);
 elements.compactButton.addEventListener("click", compactMemory);
 elements.refreshFilesButton.addEventListener("click", refreshFiles);
+elements.timelineFilter.addEventListener("change", render);
 
 render();

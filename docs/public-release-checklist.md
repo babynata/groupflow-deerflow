@@ -10,6 +10,8 @@ Use this checklist before making the repository public.
 - Core Runtime API is documented in `docs/api.md`.
 - DeerFlow lifecycle reference exists in `examples/deerflow-run-lifecycle.js`.
 - RFC exists in `docs/deerflow-rfc.md`.
+- Production readiness notes exist in `docs/production-readiness.md`.
+- Security, compatibility, and limitation notes exist.
 - License file exists.
 - No temporary project wording appears in source or docs.
 

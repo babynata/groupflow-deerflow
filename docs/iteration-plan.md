@@ -28,7 +28,7 @@ Acceptance:
 
 ## V0.2: Core Runtime
 
-Status: in progress.
+Status: completed.
 
 Goal: turn the workspace model into a callable runtime.
 
@@ -55,6 +55,8 @@ Acceptance:
 
 ## V0.3: MCP Server
 
+Status: completed.
+
 Goal: allow DeerFlow and other agent hosts to use GroupFlow through tools.
 
 Scope:
@@ -78,6 +80,8 @@ Acceptance:
 
 ## V0.4: DeerFlow Adapter
 
+Status: completed.
+
 Goal: make GroupFlow feel native to DeerFlow without forking DeerFlow.
 
 Scope:
@@ -94,6 +98,8 @@ Acceptance:
 - DeerFlow remains the host runtime; GroupFlow remains the shared memory and project state layer.
 
 ## V0.5: Project Workspace UI
+
+Status: completed.
 
 Goal: move from first workspace surface to usable workspace.
 
@@ -116,6 +122,8 @@ Acceptance:
 
 ## V0.6: Persistence, Replay, and Checkpoints
 
+Status: completed.
+
 Goal: support long-running work, audit, and recovery.
 
 Scope:
@@ -135,6 +143,8 @@ Acceptance:
 - Replay shows why a group reached its current state.
 
 ## V1.0: Production Readiness
+
+Status: completed.
 
 Goal: make GroupFlow technically credible before any community-facing push.
 
@@ -156,6 +166,8 @@ Acceptance:
 - Runtime, MCP, adapter, persistence, replay, and workspace behavior are documented enough for an engineer to evaluate.
 
 ## V1.1: Public Expression and Community Discussion
+
+Status: next.
 
 Goal: package the completed technical work for public attention and DeerFlow community discussion.
 

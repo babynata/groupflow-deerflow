@@ -162,11 +162,13 @@ h1 {
   text-align: right;
 }
 
-.group-tabs {
+.group-tabs,
+.project-list {
   display: grid;
   gap: 10px;
 }
 
+.project-row,
 .group-tab {
   width: 100%;
   padding: 14px;
@@ -182,23 +184,32 @@ h1 {
   background: #e8f3ee;
 }
 
+.project-row strong,
+.project-row span,
+.project-row small,
 .group-tab strong,
 .group-tab span,
 .group-tab small {
   display: block;
 }
 
+.project-row span,
 .group-tab span {
   margin-top: 7px;
   color: var(--muted);
   line-height: 1.35;
 }
 
+.project-row small,
 .group-tab small {
   margin-top: 10px;
   color: var(--green);
   font-weight: 800;
   text-transform: capitalize;
+}
+
+.project-list {
+  margin-bottom: 20px;
 }
 
 .main-grid {
@@ -220,9 +231,20 @@ h1 {
 
 .memory-sections,
 .agent-board,
-.file-list {
+.file-list,
+.artifact-list {
   display: grid;
   gap: 12px;
+}
+
+.memory-summary {
+  margin: 0 0 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #eef6f2;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 .memory-block {
@@ -245,7 +267,8 @@ h1 {
 }
 
 .agent-card,
-.file-row {
+.file-row,
+.artifact-row {
   padding: 14px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -253,11 +276,31 @@ h1 {
 }
 
 .agent-card header,
-.file-row {
+.file-row,
+.artifact-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+}
+
+.artifact-section {
+  margin-bottom: 16px;
+}
+
+.panel-heading.compact {
+  margin-bottom: 10px;
+}
+
+.timeline-filter {
+  width: 180px;
+  min-height: 36px;
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--ink);
+  font: inherit;
 }
 
 .agent-card p,
@@ -400,4 +443,3 @@ h1 {
     grid-column: 1;
   }
 }
-
