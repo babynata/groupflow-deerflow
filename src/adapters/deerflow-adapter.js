@@ -12,15 +12,27 @@ export function createDeerFlowAdapter(groupFlowRuntime) {
     switch (event.type) {
       case "task_created":
         return handleTaskCreated(event);
+      case "agent_registered":
+        return groupFlowRuntime.registerAgent(event.groupId, event.agent);
       case "agent_started":
         return beforeAgentRun(event);
       case "subagent_result":
         return afterAgentRun(event);
+      case "timeline_event":
+        return groupFlowRuntime.appendTimelineEvent(event.groupId, {
+          title: event.title,
+          detail: event.detail,
+          actor: event.actor || "deerflow",
+          at: event.at,
+          metadata: event.metadata
+        });
       case "tool_called":
         return groupFlowRuntime.appendTimelineEvent(event.groupId, {
           title: "DeerFlow tool called",
           detail: event.detail || `${event.agentId || "agent"} called ${event.toolName || "tool"}.`,
-          actor: event.agentId || "deerflow"
+          actor: event.agentId || "deerflow",
+          at: event.at,
+          metadata: event.metadata
         });
       case "file_read":
         return onFileTouched({
@@ -30,7 +42,8 @@ export function createDeerFlowAdapter(groupFlowRuntime) {
             path: event.path,
             role: event.role || "source",
             status: "read",
-            summary: event.summary || "Read by DeerFlow."
+            summary: event.summary || "Read by DeerFlow.",
+            metadata: event.metadata
           }
         });
       case "file_written":
@@ -41,7 +54,8 @@ export function createDeerFlowAdapter(groupFlowRuntime) {
             path: event.path,
             role: event.role || "artifact",
             status: event.status || "modified",
-            summary: event.summary || "Written by DeerFlow."
+            summary: event.summary || "Written by DeerFlow.",
+            metadata: event.metadata
           }
         });
       case "run_paused":
@@ -81,7 +95,8 @@ export function createDeerFlowAdapter(groupFlowRuntime) {
       groupFlowRuntime.appendFinding(groupId, {
         agentId,
         content: result.finding,
-        source: "deerflow_subagent_result"
+        source: "deerflow_subagent_result",
+        metadata: result.metadata
       });
     }
 
@@ -89,7 +104,8 @@ export function createDeerFlowAdapter(groupFlowRuntime) {
       groupFlowRuntime.recordDecision(groupId, {
         agentId,
         content: result.decision,
-        reason: result.reason || "Recorded from DeerFlow sub-agent output."
+        reason: result.reason || "Recorded from DeerFlow sub-agent output.",
+        metadata: result.metadata
       });
     }
 
@@ -104,7 +120,9 @@ export function createDeerFlowAdapter(groupFlowRuntime) {
     return groupFlowRuntime.appendTimelineEvent(groupId, {
       title: "DeerFlow sub-agent completed",
       detail: `${agentId} wrote structured state back to GroupFlow.`,
-      actor: agentId
+      actor: agentId,
+      at: result.at,
+      metadata: result.metadata
     });
   }
 
@@ -123,4 +141,3 @@ export function createDeerFlowAdapter(groupFlowRuntime) {
     return groupFlowRuntime.resumeGroup(groupId);
   }
 }
-

@@ -94,6 +94,7 @@ The command checks:
 - DeerFlow lifecycle reference runs end to end
 - MCP-style tool lifecycle runs end to end
 - DeerFlow adapter event mapping runs end to end
+- DeerFlow RunEventStore JSONL transformation runs end to end
 - JSON storage save/load works
 - checkpoint and replay inspection work
 - fixture group ids are consistent
@@ -117,6 +118,20 @@ The lifecycle reference verifies:
 - artifact listing
 - final JSON summary shape
 
+## DeerFlow RunEventStore Reference
+
+Run:
+
+```text
+npm run validate:deerflow-events
+```
+
+The RunEventStore reference verifies:
+
+- DeerFlow JSONL records can be parsed
+- native run, message, and tool records transform into GroupFlow adapter events
+- GroupFlow records a finding, artifact file state, timeline, and DeerFlow metadata
+
 ## Full Validation
 
 Run:
@@ -131,5 +146,6 @@ The full suite includes:
 - Core Runtime lifecycle
 - MCP-style tool lifecycle
 - DeerFlow adapter lifecycle
+- DeerFlow RunEventStore transformer lifecycle
 - JSON storage lifecycle
 - replay lifecycle

@@ -101,7 +101,8 @@ export function createGroupMemoryRuntime(seed = {}) {
     appendTimelineEvent(groupId, {
       title: "Finding appended",
       detail: entry.content,
-      actor: entry.agentId || "groupflow"
+      actor: entry.agentId || "groupflow",
+      metadata: entry.metadata
     });
     return group.memory.findings;
   }
@@ -113,7 +114,8 @@ export function createGroupMemoryRuntime(seed = {}) {
     appendTimelineEvent(groupId, {
       title: "Decision recorded",
       detail: entry.content,
-      actor: entry.agentId || "groupflow"
+      actor: entry.agentId || "groupflow",
+      metadata: entry.metadata
     });
     return group.memory.decisions;
   }
@@ -127,7 +129,8 @@ export function createGroupMemoryRuntime(seed = {}) {
     appendTimelineEvent(groupId, {
       title: "File state updated",
       detail: `${fileState.path} marked as ${fileState.status || "tracked"}.`,
-      actor: fileState.ownerAgentId || "groupflow"
+      actor: fileState.ownerAgentId || "groupflow",
+      metadata: fileState.metadata
     });
     return group.files;
   }
@@ -139,7 +142,8 @@ export function createGroupMemoryRuntime(seed = {}) {
       title: event.title || "Timeline event",
       detail: event.detail || "",
       actor: event.actor || "groupflow",
-      at: event.at || new Date().toISOString()
+      at: event.at || new Date().toISOString(),
+      metadata: event.metadata || {}
     });
     return group.timeline;
   }
@@ -154,7 +158,8 @@ export function createGroupMemoryRuntime(seed = {}) {
     appendTimelineEvent(groupId, {
       title: "Agent state updated",
       detail: `${agent.name || agent.id} state changed to ${agent.status || "updated"}.`,
-      actor: agent.id
+      actor: agent.id,
+      metadata: patch.metadata
     });
     return agent;
   }

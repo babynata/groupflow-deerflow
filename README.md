@@ -66,6 +66,7 @@ npm run validate:workspace
 npm run validate:lifecycle
 npm run validate:mcp
 npm run validate:adapter
+npm run validate:deerflow-events
 npm run validate:storage
 npm run validate:replay
 ```
@@ -131,6 +132,28 @@ Adapter 支持的 host events 包括：
 - `file_written`
 - `run_paused`
 - `run_resumed`
+
+### 使用 DeerFlow RunEventStore JSONL
+
+如果 DeerFlow 已经把运行事件写成 JSONL，可以先转换为 GroupFlow host events，再交给 adapter：
+
+```js
+import { createDeerFlowAdapter } from "./src/adapters/deerflow-adapter.js";
+import {
+  readDeerFlowRunEventsJsonl,
+  transformDeerFlowRunEvents
+} from "./src/adapters/deerflow-run-events.js";
+
+const records = readDeerFlowRunEventsJsonl(jsonlText);
+const events = transformDeerFlowRunEvents(records);
+const adapter = createDeerFlowAdapter(groupFlow);
+
+for (const event of events) {
+  adapter.handleEvent(event);
+}
+```
+
+这条路径适合把 DeerFlow `.deer-flow/threads/{thread_id}/runs/{run_id}.jsonl` 中的运行记录旁路写入 GroupFlow。
 
 ### 使用持久化与 Replay
 
@@ -217,6 +240,7 @@ npm run validate:workspace
 npm run validate:lifecycle
 npm run validate:mcp
 npm run validate:adapter
+npm run validate:deerflow-events
 npm run validate:storage
 npm run validate:replay
 ```
@@ -283,6 +307,28 @@ Supported host events:
 - `run_paused`
 - `run_resumed`
 
+### Use DeerFlow RunEventStore JSONL
+
+If DeerFlow writes run events as JSONL, transform them into GroupFlow host events before passing them to the adapter:
+
+```js
+import { createDeerFlowAdapter } from "./src/adapters/deerflow-adapter.js";
+import {
+  readDeerFlowRunEventsJsonl,
+  transformDeerFlowRunEvents
+} from "./src/adapters/deerflow-run-events.js";
+
+const records = readDeerFlowRunEventsJsonl(jsonlText);
+const events = transformDeerFlowRunEvents(records);
+const adapter = createDeerFlowAdapter(groupFlow);
+
+for (const event of events) {
+  adapter.handleEvent(event);
+}
+```
+
+This path is designed for sidecar ingestion from DeerFlow `.deer-flow/threads/{thread_id}/runs/{run_id}.jsonl` records.
+
 ### Use Persistence and Replay
 
 ```js
@@ -297,4 +343,3 @@ const replay = replayTimeline(state, "group");
 ```
 
 Detailed design notes are kept in the `docs/` directory.
-
