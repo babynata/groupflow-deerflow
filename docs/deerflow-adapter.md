@@ -82,3 +82,25 @@ Supported DeerFlow record types:
 The transformer preserves DeerFlow `thread_id`, `run_id`, `seq`, `event_type`, and `created_at` under timeline metadata. File state is conservative: GroupFlow records artifacts when DeerFlow clearly exposes file paths through tool calls, tool results, or artifacts fields.
 
 See `examples/deerflow-run-events-lifecycle.js` for a runnable reference.
+
+## Real RunEventStore Coverage
+
+GroupFlow also includes a sanitized fixture based on a real DeerFlow local run. That fixture covers:
+
+- repeated `run.end` records emitted during one run
+- `run.end.content.thread_data` with workspace, uploads, and outputs paths
+- `llm.human.input`
+- `llm.error`
+- middleware title responses through `llm.ai.response`
+
+The transformer keeps repeated completion records quiet by writing one completed-run timeline event per run/status pair. Workspace paths are stored as timeline metadata because they describe the DeerFlow execution environment; they are not treated as generated artifacts.
+
+Current verified behavior:
+
+- real RunEventStore JSONL creates a GroupFlow project and group
+- real lifecycle and error records become timeline events
+- DeerFlow metadata is preserved on timeline events
+- replay and checkpoint validation can run on the transformed state
+- file ledger entries remain empty when the real DeerFlow run does not expose tool or artifact paths
+
+The next production validation target is a successful DeerFlow run that produces real tool calls or artifacts, so File State Ledger behavior can be verified against official run output rather than only structured examples.

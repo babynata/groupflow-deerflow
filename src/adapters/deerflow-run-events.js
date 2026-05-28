@@ -18,6 +18,9 @@ export function transformDeerFlowRunEvents(records, options = {}) {
   const first = sourceRecords[0] || {};
   const ids = resolveIds(first, options);
   const seenAgents = new Set();
+  const seenRunEnd = new Set();
+  const seenWorkspace = new Set();
+  const seenArtifacts = new Set();
   let groupCreated = false;
   let interrupted = false;
 
@@ -46,6 +49,9 @@ export function transformDeerFlowRunEvents(records, options = {}) {
     }
 
     if (record.event_type === "run.end") {
+      appendWorkspaceEvent(record, metadata);
+      appendArtifactEvents(record, ids.leadAgentId, metadata);
+
       if (record.metadata?.status === "interrupted" || record.content?.status === "interrupted") {
         interrupted = true;
         events.push({
@@ -56,6 +62,11 @@ export function transformDeerFlowRunEvents(records, options = {}) {
         });
         continue;
       }
+
+      const runEndKey = `${record.run_id || ids.runId}:${record.metadata?.status || record.content?.status || "completed"}`;
+      if (seenRunEnd.has(runEndKey)) continue;
+      seenRunEnd.add(runEndKey);
+
       events.push({
         type: "timeline_event",
         groupId: ids.groupId,
@@ -69,14 +80,16 @@ export function transformDeerFlowRunEvents(records, options = {}) {
     }
 
     if (record.event_type === "run.error" || record.event_type === "llm.error") {
+      const errorKind = record.event_type === "llm.error" ? "LLM request error" : "run error";
+      const detail = textFromContent(record.content) || "DeerFlow RunEventStore recorded an error.";
       events.push({
         type: "timeline_event",
         groupId: ids.groupId,
         title: "DeerFlow run error",
-        detail: textFromContent(record.content) || "DeerFlow RunEventStore recorded an error.",
+        detail: `${errorKind}: ${truncate(detail, 460)}`,
         actor: "deerflow",
         at: record.created_at,
-        metadata
+        metadata: { ...metadata, errorKind }
       });
       continue;
     }
@@ -168,17 +181,7 @@ export function transformDeerFlowRunEvents(records, options = {}) {
       }
 
       for (const filePath of artifactPathsFromRecord(record)) {
-        events.push({
-          type: "file_written",
-          groupId: ids.groupId,
-          agentId,
-          path: filePath,
-          role: "artifact",
-          status: "generated",
-          summary: `Artifact surfaced by DeerFlow ${toolName || "tool"} result.`,
-          at: record.created_at,
-          metadata
-        });
+        appendArtifactEvent(filePath, agentId, record, metadata, `Artifact surfaced by DeerFlow ${toolName || "tool"} result.`);
       }
     }
 
@@ -241,6 +244,46 @@ export function transformDeerFlowRunEvents(records, options = {}) {
         metadata
       });
     }
+  }
+
+  function appendWorkspaceEvent(record, metadata) {
+    const threadData = record.content?.thread_data;
+    if (!threadData || typeof threadData !== "object") return;
+    const key = `${record.run_id || ids.runId}:${threadData.workspace_path || ""}:${threadData.outputs_path || ""}:${threadData.uploads_path || ""}`;
+    if (seenWorkspace.has(key)) return;
+    seenWorkspace.add(key);
+    events.push({
+      type: "timeline_event",
+      groupId: ids.groupId,
+      title: "DeerFlow workspace recorded",
+      detail: "DeerFlow RunEventStore exposed workspace, uploads, and outputs paths for this run.",
+      actor: "deerflow",
+      at: record.created_at,
+      metadata: { ...metadata, threadData }
+    });
+  }
+
+  function appendArtifactEvents(record, agentId, metadata) {
+    for (const filePath of artifactPathsFromRecord(record)) {
+      appendArtifactEvent(filePath, agentId, record, metadata, "Artifact surfaced by DeerFlow RunEventStore output.");
+    }
+  }
+
+  function appendArtifactEvent(filePath, agentId, record, metadata, summary) {
+    const key = `${record.run_id || ids.runId}:${filePath}`;
+    if (seenArtifacts.has(key)) return;
+    seenArtifacts.add(key);
+    events.push({
+      type: "file_written",
+      groupId: ids.groupId,
+      agentId,
+      path: filePath,
+      role: "artifact",
+      status: "generated",
+      summary,
+      at: record.created_at,
+      metadata
+    });
   }
 }
 
