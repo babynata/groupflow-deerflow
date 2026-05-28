@@ -157,6 +157,8 @@ for (const event of events) {
 
 当前已用真实 DeerFlow RunEventStore 结构验证 lifecycle、error、timeline metadata 和 checkpoint 路径。File State Ledger 只在 DeerFlow 记录中明确出现 tool call、artifact 或文件路径时写入，不会从 workspace 路径推断文件产物。
 
+真实 DeerFlow `write_file` tool call 已验证可进入 GroupFlow File State Ledger 和 artifact list。
+
 ### 使用持久化与 Replay
 
 ```js
@@ -332,6 +334,8 @@ for (const event of events) {
 This path is designed for sidecar ingestion from DeerFlow `.deer-flow/threads/{thread_id}/runs/{run_id}.jsonl` records.
 
 The current transformer has been validated against real DeerFlow RunEventStore structure for lifecycle, error, timeline metadata, and checkpoint paths. File State Ledger entries are written only when DeerFlow records explicit tool calls, artifacts, or file paths; workspace paths are not treated as generated files.
+
+Real DeerFlow `write_file` tool calls have been validated into the GroupFlow File State Ledger and artifact list.
 
 ### Use Persistence and Replay
 

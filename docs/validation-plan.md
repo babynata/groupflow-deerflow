@@ -131,6 +131,8 @@ The RunEventStore reference verifies:
 - DeerFlow JSONL records can be parsed
 - native run, message, and tool records transform into GroupFlow adapter events
 - GroupFlow records a finding, artifact file state, timeline, and DeerFlow metadata
+- sanitized real DeerFlow lifecycle/error JSONL creates timeline, metadata, replay, and checkpoint state
+- sanitized real DeerFlow `write_file` JSONL creates File State Ledger and artifact list entries
 
 ## Full Validation
 

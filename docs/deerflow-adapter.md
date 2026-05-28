@@ -92,6 +92,7 @@ GroupFlow also includes a sanitized fixture based on a real DeerFlow local run. 
 - `llm.human.input`
 - `llm.error`
 - middleware title responses through `llm.ai.response`
+- real `write_file` tool calls with `/mnt/user-data/outputs/...` artifact paths
 
 The transformer keeps repeated completion records quiet by writing one completed-run timeline event per run/status pair. Workspace paths are stored as timeline metadata because they describe the DeerFlow execution environment; they are not treated as generated artifacts.
 
@@ -102,5 +103,6 @@ Current verified behavior:
 - DeerFlow metadata is preserved on timeline events
 - replay and checkpoint validation can run on the transformed state
 - file ledger entries remain empty when the real DeerFlow run does not expose tool or artifact paths
+- real DeerFlow `write_file` tool calls produce File State Ledger entries and artifact listings
 
-The next production validation target is a successful DeerFlow run that produces real tool calls or artifacts, so File State Ledger behavior can be verified against official run output rather than only structured examples.
+The next production validation target is a broader successful DeerFlow run with multiple tools and multiple artifacts, so GroupFlow can validate ordering and ownership across several generated files.

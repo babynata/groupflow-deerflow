@@ -18,7 +18,8 @@ const checks = [
   ["interrupted run resumes group", summary.status === "running" && summary.resumeState === "restored"],
   ["timeline records DeerFlow metadata", summary.metadataEventCount >= 5],
   ["timeline contains run activity", summary.timelineCount >= 9],
-  ...realRunFixtureChecks()
+  ...realRunFixtureChecks(),
+  ...realArtifactRunFixtureChecks()
 ];
 
 let failures = 0;
@@ -75,5 +76,44 @@ function realRunFixtureChecks() {
     ["real DeerFlow fixture tolerates no file ledger", group.files.length === 0],
     ["real DeerFlow fixture replay available", replay.length === timeline.length],
     ["real DeerFlow fixture checkpoint written", storage.listCheckpoints(groupId).length >= 1]
+  ];
+}
+
+function realArtifactRunFixtureChecks() {
+  const fixturePath = new URL("../src/fixtures/deerflow-real-artifact-run-events.jsonl", import.meta.url);
+  const records = readDeerFlowRunEventsJsonl(fs.readFileSync(fixturePath, "utf8"));
+  const events = transformDeerFlowRunEvents(records, {
+    objective: "Validate real DeerFlow write_file artifact records."
+  });
+
+  const runtime = createGroupMemoryRuntime();
+  const adapter = createDeerFlowAdapter(runtime);
+  for (const event of events) adapter.handleEvent(event);
+
+  const state = runtime.snapshot();
+  const groupId = "groupflow_artifact_run_fixture";
+  const group = state.groups[groupId];
+  const storage = createJsonFileStorage({ baseDir: path.join(os.tmpdir(), "groupflow-deerflow-artifact-validation") });
+  storage.save(state);
+  storage.writeCheckpoint(groupId, {
+    at: "2026-05-28T08:26:18.000Z",
+    reason: "Real DeerFlow artifact JSONL fixture validation",
+    state: group
+  });
+
+  const timeline = group?.timeline || [];
+  const replay = replayTimeline(state, groupId);
+  const artifacts = runtime.listArtifacts(groupId);
+  const artifactPath = "/mnt/user-data/outputs/groupflow-artifact-check.md";
+
+  return [
+    ["real DeerFlow artifact fixture parsed", records.length === 9],
+    ["real DeerFlow artifact fixture saw write_file record", records.some((record) => JSON.stringify(record.content || {}).includes("write_file"))],
+    ["real DeerFlow artifact fixture transforms write_file", events.some((event) => event.type === "tool_called" && event.toolName === "write_file")],
+    ["real DeerFlow artifact fixture writes file ledger", group.files.some((file) => file.path === artifactPath && file.role === "artifact")],
+    ["real DeerFlow artifact fixture lists artifact", artifacts.some((file) => file.path === artifactPath)],
+    ["real DeerFlow artifact fixture preserves metadata", timeline.filter((event) => event.metadata?.deerflowRunId).length >= 4],
+    ["real DeerFlow artifact fixture replay available", replay.length === timeline.length],
+    ["real DeerFlow artifact fixture checkpoint written", storage.listCheckpoints(groupId).length >= 1]
   ];
 }
