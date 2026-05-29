@@ -55,6 +55,16 @@ PYTHONPATH=python python3 -m groupflow_deerflow ingest \
 
 输出目录包含 `state.json`、`timeline.json`、`file-ledger.json`、`artifacts.json` 和 `summary.json`。
 
+如果希望 DeerFlow 在运行中调用 GroupFlow，可以启动 HTTP tool sidecar：
+
+```bash
+PYTHONPATH=python python3 -m groupflow_deerflow server \
+  --state .groupflow/state.json \
+  --port 8765
+```
+
+DeerFlow 或你的 adapter 可以通过 `POST /tools/{tool_name}` 调用 `get_group_context`、`append_finding`、`update_file_state` 等工具。
+
 ### 打开本地工作台
 
 在项目目录运行：
@@ -202,6 +212,36 @@ for (const event of events) {
 
 真实 DeerFlow `write_file` tool call 已验证可进入 GroupFlow File State Ledger 和 artifact list。
 
+### 运行时接入 DeerFlow
+
+GroupFlow 可以作为独立 HTTP tool sidecar 运行，适合已有 DeerFlow 项目以最小侵入方式接入：
+
+```bash
+PYTHONPATH=python python3 -m groupflow_deerflow server \
+  --state .groupflow/state.json \
+  --port 8765
+```
+
+调用示例：
+
+```bash
+curl -X POST http://127.0.0.1:8765/tools/get_group_context \
+  -H "Content-Type: application/json" \
+  -d '{"groupId":"group","options":{"forAgentId":"researcher"}}'
+```
+
+Python client 示例：
+
+```python
+from groupflow_deerflow.client import GroupFlowClient
+
+groupflow = GroupFlowClient("http://127.0.0.1:8765")
+context = groupflow.call_tool("get_group_context", {
+    "groupId": "group",
+    "options": {"forAgentId": "researcher"},
+})
+```
+
 ### 使用持久化与 Replay
 
 ```js
@@ -275,6 +315,16 @@ PYTHONPATH=python python3 -m groupflow_deerflow ingest \
 ```
 
 The output directory contains `state.json`, `timeline.json`, `file-ledger.json`, `artifacts.json`, and `summary.json`.
+
+If DeerFlow should call GroupFlow during execution, start the HTTP tool sidecar:
+
+```bash
+PYTHONPATH=python python3 -m groupflow_deerflow server \
+  --state .groupflow/state.json \
+  --port 8765
+```
+
+DeerFlow or your adapter can call `POST /tools/{tool_name}` for tools such as `get_group_context`, `append_finding`, and `update_file_state`.
 
 ### Open the Local Workspace
 
@@ -422,6 +472,36 @@ This path is designed for sidecar ingestion from DeerFlow `.deer-flow/threads/{t
 The current transformer has been validated against real DeerFlow RunEventStore structure for lifecycle, error, timeline metadata, and checkpoint paths. File State Ledger entries are written only when DeerFlow records explicit tool calls, artifacts, or file paths; workspace paths are not treated as generated files.
 
 Real DeerFlow `write_file` tool calls have been validated into the GroupFlow File State Ledger and artifact list.
+
+### Use GroupFlow During DeerFlow Runs
+
+GroupFlow can run as an HTTP tool sidecar for existing DeerFlow projects:
+
+```bash
+PYTHONPATH=python python3 -m groupflow_deerflow server \
+  --state .groupflow/state.json \
+  --port 8765
+```
+
+Tool call example:
+
+```bash
+curl -X POST http://127.0.0.1:8765/tools/get_group_context \
+  -H "Content-Type: application/json" \
+  -d '{"groupId":"group","options":{"forAgentId":"researcher"}}'
+```
+
+Python client example:
+
+```python
+from groupflow_deerflow.client import GroupFlowClient
+
+groupflow = GroupFlowClient("http://127.0.0.1:8765")
+context = groupflow.call_tool("get_group_context", {
+    "groupId": "group",
+    "options": {"forAgentId": "researcher"},
+})
+```
 
 ### Use Persistence and Replay
 

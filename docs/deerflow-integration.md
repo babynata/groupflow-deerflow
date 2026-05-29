@@ -12,7 +12,27 @@ GroupFlow
 
 ## Python Sidecar Entry
 
-For DeerFlow projects, the first integration path is the Python sidecar. It reads a DeerFlow RunEventStore JSONL file and writes GroupFlow state files without modifying DeerFlow source code.
+For DeerFlow projects, the least-intrusive integration path is the Python sidecar. It can run as an HTTP tool server during DeerFlow execution, or ingest a RunEventStore JSONL file after a run.
+
+Start the runtime tool sidecar:
+
+```bash
+PYTHONPATH=python python3 -m groupflow_deerflow server \
+  --state .groupflow/state.json \
+  --port 8765
+```
+
+DeerFlow or a thin project adapter can call:
+
+- `POST /tools/get_group_context` before an agent or sub-agent runs
+- `POST /tools/append_finding` after an agent produces useful memory
+- `POST /tools/record_decision` when the group makes a decision
+- `POST /tools/update_file_state` when tools read or write files
+- `POST /tools/append_timeline_event` for host lifecycle events
+
+The server stores shared state in a local JSON file and does not require DeerFlow source changes.
+
+For post-run import, read a DeerFlow RunEventStore JSONL file and write GroupFlow state files:
 
 ```bash
 PYTHONPATH=python python3 -m groupflow_deerflow ingest \
@@ -28,15 +48,15 @@ The sidecar writes:
 - `.groupflow/artifacts.json`
 - `.groupflow/summary.json`
 
-It is dependency-free and uses only the Python standard library.
+Both sidecar modes are dependency-free and use only the Python standard library.
 
 ## Runtime Flow
 
 1. DeerFlow receives a long-running user task.
 2. DeerFlow planner creates or selects a GroupFlow group.
-3. Before each sub-agent run, DeerFlow asks GroupFlow for scoped context.
+3. Before each sub-agent run, DeerFlow asks the GroupFlow sidecar for scoped context.
 4. The sub-agent runs with private context plus group context.
-5. After the run, DeerFlow writes structured state back to GroupFlow.
+5. After the run, DeerFlow writes structured state back to the GroupFlow sidecar.
 6. GroupFlow updates memory, file state, timeline, and resume summary.
 
 ## Before Agent Run
