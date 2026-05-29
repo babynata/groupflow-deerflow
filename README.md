@@ -23,12 +23,33 @@ GroupFlow 不替代 DeerFlow，也不替代 sub-agent 私有 context。它补的
 
 ## 如何使用
 
+### 快速开始
+
+GroupFlow 当前不依赖外部 npm package。拉取仓库后可以直接启动工作台或运行验证：
+
+```bash
+git clone https://github.com/babynata/groupflow-deerflow.git
+cd groupflow-deerflow
+npm run serve
+```
+
+默认地址：
+
+```text
+http://127.0.0.1:4173
+```
+
+验证当前能力：
+
+```bash
+npm run validate
+```
+
 ### 打开本地工作台
 
 在项目目录运行：
 
 ```bash
-cd /Users/natalie/codex-workspace/groupflow-deerflow
 npm run serve
 ```
 
@@ -138,12 +159,16 @@ Adapter 支持的 host events 包括：
 如果 DeerFlow 已经把运行事件写成 JSONL，可以先转换为 GroupFlow host events，再交给 adapter：
 
 ```js
+import fs from "node:fs";
 import { createDeerFlowAdapter } from "./src/adapters/deerflow-adapter.js";
+import { createGroupMemoryRuntime } from "./src/core/group-memory-runtime.js";
 import {
   readDeerFlowRunEventsJsonl,
   transformDeerFlowRunEvents
 } from "./src/adapters/deerflow-run-events.js";
 
+const groupFlow = createGroupMemoryRuntime();
+const jsonlText = fs.readFileSync(".deer-flow/threads/{thread_id}/runs/{run_id}.jsonl", "utf8");
 const records = readDeerFlowRunEventsJsonl(jsonlText);
 const events = transformDeerFlowRunEvents(records);
 const adapter = createDeerFlowAdapter(groupFlow);
@@ -201,12 +226,33 @@ GroupFlow does not replace DeerFlow or sub-agent private context. It adds group-
 
 ## How to Use
 
+### Quick Start
+
+GroupFlow currently has no external npm package dependencies. After cloning the repository, you can start the workspace or run validation directly:
+
+```bash
+git clone https://github.com/babynata/groupflow-deerflow.git
+cd groupflow-deerflow
+npm run serve
+```
+
+Default local URL:
+
+```text
+http://127.0.0.1:4173
+```
+
+Validate the current capabilities:
+
+```bash
+npm run validate
+```
+
 ### Open the Local Workspace
 
 Run this from the project directory:
 
 ```bash
-cd /Users/natalie/codex-workspace/groupflow-deerflow
 npm run serve
 ```
 
@@ -316,12 +362,16 @@ Supported host events:
 If DeerFlow writes run events as JSONL, transform them into GroupFlow host events before passing them to the adapter:
 
 ```js
+import fs from "node:fs";
 import { createDeerFlowAdapter } from "./src/adapters/deerflow-adapter.js";
+import { createGroupMemoryRuntime } from "./src/core/group-memory-runtime.js";
 import {
   readDeerFlowRunEventsJsonl,
   transformDeerFlowRunEvents
 } from "./src/adapters/deerflow-run-events.js";
 
+const groupFlow = createGroupMemoryRuntime();
+const jsonlText = fs.readFileSync(".deer-flow/threads/{thread_id}/runs/{run_id}.jsonl", "utf8");
 const records = readDeerFlowRunEventsJsonl(jsonlText);
 const events = transformDeerFlowRunEvents(records);
 const adapter = createDeerFlowAdapter(groupFlow);
