@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "serve": "node scripts/serve.js",
-    "validate": "node scripts/validate-workspace.js && node scripts/validate-lifecycle.js && node scripts/validate-mcp.js && node scripts/validate-adapter.js && node scripts/validate-deerflow-events.js && node scripts/validate-storage.js && node scripts/validate-replay.js",
+    "validate": "node scripts/validate-workspace.js && node scripts/validate-lifecycle.js && node scripts/validate-mcp.js && node scripts/validate-adapter.js && node scripts/validate-deerflow-events.js && node scripts/validate-storage.js && node scripts/validate-replay.js && python3 scripts/validate-python-sidecar.py",
     "validate:adapter": "node scripts/validate-adapter.js",
     "validate:deerflow-events": "node scripts/validate-deerflow-events.js",
     "validate:lifecycle": "node scripts/validate-lifecycle.js",
     "validate:mcp": "node scripts/validate-mcp.js",
+    "validate:python": "python3 scripts/validate-python-sidecar.py",
     "validate:replay": "node scripts/validate-replay.js",
     "validate:storage": "node scripts/validate-storage.js",
     "validate:workspace": "node scripts/validate-workspace.js"

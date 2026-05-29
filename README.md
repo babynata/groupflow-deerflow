@@ -45,6 +45,16 @@ http://127.0.0.1:4173
 npm run validate
 ```
 
+如果你已经有 DeerFlow 项目，可以用 Python sidecar 直接读取 DeerFlow RunEventStore JSONL，并生成 GroupFlow 状态文件：
+
+```bash
+PYTHONPATH=python python3 -m groupflow_deerflow ingest \
+  --run .deer-flow/threads/{thread_id}/runs/{run_id}.jsonl \
+  --out .groupflow
+```
+
+输出目录包含 `state.json`、`timeline.json`、`file-ledger.json`、`artifacts.json` 和 `summary.json`。
+
 ### 打开本地工作台
 
 在项目目录运行：
@@ -156,6 +166,14 @@ Adapter 支持的 host events 包括：
 
 ### 使用 DeerFlow RunEventStore JSONL
 
+推荐 DeerFlow 用户优先使用 Python sidecar：
+
+```bash
+PYTHONPATH=python python3 -m groupflow_deerflow ingest \
+  --run .deer-flow/threads/{thread_id}/runs/{run_id}.jsonl \
+  --out .groupflow
+```
+
 如果 DeerFlow 已经把运行事件写成 JSONL，可以先转换为 GroupFlow host events，再交给 adapter：
 
 ```js
@@ -247,6 +265,16 @@ Validate the current capabilities:
 ```bash
 npm run validate
 ```
+
+If you already have a DeerFlow project, use the Python sidecar to ingest DeerFlow RunEventStore JSONL and write GroupFlow state files:
+
+```bash
+PYTHONPATH=python python3 -m groupflow_deerflow ingest \
+  --run .deer-flow/threads/{thread_id}/runs/{run_id}.jsonl \
+  --out .groupflow
+```
+
+The output directory contains `state.json`, `timeline.json`, `file-ledger.json`, `artifacts.json`, and `summary.json`.
 
 ### Open the Local Workspace
 
@@ -358,6 +386,14 @@ Supported host events:
 - `run_resumed`
 
 ### Use DeerFlow RunEventStore JSONL
+
+For DeerFlow users, the recommended entry point is the Python sidecar:
+
+```bash
+PYTHONPATH=python python3 -m groupflow_deerflow ingest \
+  --run .deer-flow/threads/{thread_id}/runs/{run_id}.jsonl \
+  --out .groupflow
+```
 
 If DeerFlow writes run events as JSONL, transform them into GroupFlow host events before passing them to the adapter:
 

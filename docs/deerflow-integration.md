@@ -10,6 +10,26 @@ GroupFlow
   owns group memory, file state, timeline, decisions, resume context
 ```
 
+## Python Sidecar Entry
+
+For DeerFlow projects, the first integration path is the Python sidecar. It reads a DeerFlow RunEventStore JSONL file and writes GroupFlow state files without modifying DeerFlow source code.
+
+```bash
+PYTHONPATH=python python3 -m groupflow_deerflow ingest \
+  --run .deer-flow/threads/{thread_id}/runs/{run_id}.jsonl \
+  --out .groupflow
+```
+
+The sidecar writes:
+
+- `.groupflow/state.json`
+- `.groupflow/timeline.json`
+- `.groupflow/file-ledger.json`
+- `.groupflow/artifacts.json`
+- `.groupflow/summary.json`
+
+It is dependency-free and uses only the Python standard library.
+
 ## Runtime Flow
 
 1. DeerFlow receives a long-running user task.
@@ -91,4 +111,3 @@ The DeerFlow adapter should translate host events into GroupFlow updates:
 - `run_resumed` -> resume event
 
 The adapter should not depend on private DeerFlow internals in V0.1. It should document the expected boundary and keep the core runtime portable.
-
